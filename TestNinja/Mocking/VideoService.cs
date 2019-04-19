@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
@@ -9,9 +10,19 @@ namespace TestNinja.Mocking
 {
     public class VideoService
     {
+        private IFileReader _fileReader;
+
+        // constructor takes in optional parameter
+        public VideoService(IFileReader fileReader = null)
+        {
+            // if filereader not null then assign filereader to _filereader
+            // if filereader is null then create new filereader
+            _fileReader = fileReader ?? new FileReader();
+        }    
+
         public string ReadVideoTitle()
         {
-            var str = File.ReadAllText("video.txt");
+            var str = _fileReader.Read("video.txt");
             var video = JsonConvert.DeserializeObject<Video>(str);
             if (video == null)
                 return "Error parsing the video.";
